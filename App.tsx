@@ -1,118 +1,152 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Icon, PaperProvider} from 'react-native-paper';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {StyleSheet} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// Імпорт екранів
+import {Home} from './src/screens/home';
+import {EventsScreen} from './src/screens/eventsScreen';
+import {SurveysScreen} from './src/screens/surveysScreen';
+import {AchievementsScreen} from './src/screens/achievementsScreen';
+import {SettingsScreen} from './src/screens/settingsScreen';
+import {ProfileScreen} from './src/screens/profile';
+import {PhotoAlbumScreen} from './src/screens/photoAlbumScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const ProfileStack = createNativeStackNavigator<any>();
+const Tab = createBottomTabNavigator<any>();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+// Navigator для профілю
+const ProfileNavigator = () => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <ProfileStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#1a1b2e',
+        },
+        headerTintColor: '#e0e0ff',
+        headerTitleStyle: {
+          color: '#e0e0ff',
+        },
+      }}>
+      <ProfileStack.Screen
+        options={{headerShown: false}}
+        name="TabNavigation"
+        component={TabNavigation}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <ProfileStack.Screen name="Achievements" component={AchievementsScreen} />
+      <ProfileStack.Screen name="Settings" component={SettingsScreen} />
+    </ProfileStack.Navigator>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+const TabNavigation = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#b8b8ff',
+        tabBarInactiveTintColor: '#6b6b8f',
+        tabBarStyle: tabBarStyles.tabBar,
+        tabBarLabelStyle: tabBarStyles.tabLabel,
+        tabBarHideOnKeyboard: true,
+      }}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: 'Dashboard',
+          tabBarIcon: ({color}) => (
+            <Icon source="home" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Events"
+        component={EventsScreen}
+        options={{
+          tabBarLabel: 'Events',
+          tabBarIcon: ({color}) => (
+            <Icon source="calendar" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Album"
+        component={PhotoAlbumScreen}
+        options={{
+          tabBarLabel: 'Album',
+          tabBarIcon: ({color}) => (
+            <Icon source="camera" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Surveys"
+        component={SurveysScreen}
+        options={{
+          tabBarLabel: 'Surveys',
+          tabBarIcon: ({color}) => (
+            <Icon source="clipboard-text" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProfileMain"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color}) => (
+            <Icon source="face-man-profile" size={24} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+// Стилі для таб-бару
+const tabBarStyles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: '#252642',
+    borderTopWidth: 0,
+    elevation: 8,
+    height: 60,
+    paddingBottom: 8,
+    paddingTop: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  tabLabel: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginTop: 2,
   },
 });
 
-export default App;
+// Основний додаток з навігацією
+export const App = () => {
+  const theme = {
+    colors: {
+      primary: '#b8b8ff',
+      background: '#1a1b2e',
+      surface: '#252642',
+      text: '#e0e0ff',
+      placeholder: '#6b6b8f',
+    },
+  };
+
+  return (
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
+        <ProfileNavigator />
+      </NavigationContainer>
+    </PaperProvider>
+  );
+};
